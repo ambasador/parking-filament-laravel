@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SpaceResource\Pages;
 use App\Filament\Resources\SpaceResource\RelationManagers;
 use App\Models\Space;
+use App\Models\Parking;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -12,7 +13,9 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 class SpaceResource extends Resource
 {
     protected static ?string $model = Space::class;
@@ -23,7 +26,22 @@ class SpaceResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Select::make('parking_id')
+                ->relationship('parking', 'id')
+                ->label('Parking')
+                ->options(Parking::all()->pluck('name', 'id'))
+                ->searchable()
+                ->reactive(),
+                TextInput::make('externalid')
+                ->required()
+                ->minValue(0)
+                ->maxValue(100)
+                ->maxLength(100),
+                TextInput::make('active')
+                ->required()
+                ->minValue(0)
+                ->maxValue(1)
+                ->maxLength(1),
             ]);
     }
 
@@ -31,7 +49,9 @@ class SpaceResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('parking.name')->sortable()->searchable(),
+                TextColumn::make('externalid')->sortable()->searchable(),
+                TextColumn::make('active')->sortable()->searchable(),
             ])
             ->filters([
                 //

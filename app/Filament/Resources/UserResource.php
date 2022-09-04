@@ -39,6 +39,7 @@ class UserResource extends Resource
                         TextInput::make('email')
                             ->label('Email Address')
                             ->required()
+                            ->email()
                             ->maxLength(255),
                         TextInput::make('password')
                             ->password()
